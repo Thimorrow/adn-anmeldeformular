@@ -109,11 +109,6 @@ div {
     max-width: calc(100vw - 24px);
   }
 
-  main > section > div {
-    width: calc(100vw - 24px);
-    max-width: calc(100vw - 24px);
-  }
-
   .calendly-inline-widget {
     width: 100%;
     max-width: 100%;
