@@ -34,15 +34,15 @@ export default function Home() {
       </header>
 
       <main className="px-3 pb-10 sm:px-6 lg:px-12">
-        <section className="mx-auto grid max-w-[1180px] items-stretch gap-6 py-4 sm:py-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12 lg:py-14">
-          <div className="flex min-h-[520px] min-w-0 flex-col justify-center rounded-[28px] bg-hero-gradient px-8 py-10 text-white shadow-hero sm:px-12 lg:px-16">
-            <p className="mb-0 text-label uppercase text-white/70">
+        <section className="mx-auto grid max-w-[1180px] items-stretch gap-5 py-4 sm:py-8 lg:grid-cols-[1.08fr_0.92fr] lg:py-12">
+          <div className="flex min-h-[430px] min-w-0 flex-col justify-center rounded-[28px] border border-shell bg-panel px-8 py-10 shadow-card sm:px-12 lg:px-14">
+            <p className="mb-3 text-label uppercase text-muted">
               ADN KI-Transformation
             </p>
-            <h1 className="mb-6 max-w-[760px] text-[38px] font-normal leading-[1.05] tracking-[-0.8px] sm:text-[48px] lg:text-[58px] lg:tracking-[-1.4px]">
+            <h1 className="mb-6 max-w-[760px] text-[38px] font-normal leading-[1.05] tracking-[-0.8px] text-ink sm:text-[50px] lg:text-[58px] lg:tracking-[-1.4px]">
               Termine buchen für KI Training vor Ort
             </h1>
-            <p className="mb-8 max-w-[720px] text-[15px] leading-[1.6] text-white/80 sm:text-[17px]">
+            <p className="mb-8 max-w-[700px] text-[15px] leading-[1.62] text-muted sm:text-[17px]">
               Das Training ist Teil des KI-Transformationsprogramms bei ADN und
               wird von yesterday als Partner für die KI-Transformation
               durchgeführt. Ziel ist, dass du KI sicher in deinem Arbeitsalltag
@@ -50,28 +50,48 @@ export default function Home() {
               KI-Helfern für wiederkehrende Aufgaben.
             </p>
             <a
-              className="inline-flex min-h-[46px] w-fit items-center justify-center rounded-full bg-button-primary px-5 text-[13px] font-medium leading-none text-white no-underline shadow-button transition hover:-translate-y-px hover:bg-button-primary-hover"
+              className="group inline-flex min-h-[48px] w-fit items-center justify-center gap-2 rounded-full bg-button-primary px-6 text-[13px] font-medium leading-none text-white no-underline shadow-button transition hover:-translate-y-px hover:bg-button-primary-hover"
               href="#buchung"
             >
-              Termine auswählen
+              <span className="text-white">Termine auswählen</span>
+              <span
+                className="flex h-6 w-6 items-center justify-center rounded-full bg-white/12 text-white transition group-hover:translate-x-0.5 group-hover:bg-white/18"
+                aria-hidden="true"
+              >
+                →
+              </span>
             </a>
           </div>
 
           <div
-            className="min-w-0 self-center rounded-[28px] border border-line bg-panel p-6 shadow-card sm:p-8"
+            className="flex min-w-0 flex-col justify-between rounded-[28px] bg-hero-gradient p-6 text-white shadow-hero sm:p-8 lg:p-9"
             aria-label="Trainingsübersicht"
           >
-            <TrainingStep
-              index="01"
-              title="Grundlagen-Training"
-              body="Erstes praktisches Ausprobieren und sicherer Umgang im Alltag."
-            />
-            <div className="my-2 ml-5 h-14 w-0.5 rounded-full bg-ink/10" aria-hidden="true" />
-            <TrainingStep
-              index="02"
-              title="Fortgeschrittenen-Training"
-              body="Eigene KI-Helfer einrichten und Umsetzung im Team planen."
-            />
+            <div>
+              <p className="mb-3 text-label uppercase text-white/65">Vor Ort</p>
+              <h2 className="mb-4 text-[28px] font-normal leading-[1.12] tracking-[-0.4px] sm:text-[34px]">
+                Zwei Tage, eine klare Reihenfolge.
+              </h2>
+              <p className="mb-7 text-[15px] leading-[1.55] text-white/75">
+                Beide Termine gehören zusammen. Tag 1 legt die Grundlage, Tag 2
+                übersetzt das Gelernte in eigene KI-Helfer und Team-Umsetzung.
+              </p>
+            </div>
+            <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/15">
+              <TrainingStep
+                index="01"
+                title="Grundlagen-Training"
+                body="Zuerst buchen."
+                variant="dark"
+              />
+              <div className="my-3 ml-5 h-12 w-0.5 rounded-full bg-white/20" aria-hidden="true" />
+              <TrainingStep
+                index="02"
+                title="Fortgeschrittenen-Training"
+                body="Danach buchen."
+                variant="dark"
+              />
+            </div>
           </div>
         </section>
 
@@ -128,7 +148,7 @@ export default function Home() {
             Beide Termine nacheinander auswählen
           </SectionHeading>
 
-          <div className="grid gap-5">
+          <div className="grid gap-5 xl:grid-cols-2">
             {bookings.map((booking) => (
               <article
                 key={booking.url}
@@ -143,7 +163,7 @@ export default function Home() {
                   </h3>
                 </div>
                 <div
-                  className="calendly-inline-widget h-[700px] min-w-0 sm:h-[760px] sm:min-w-[320px]"
+                  className="calendly-inline-widget h-[700px] min-w-0 sm:h-[760px] sm:min-w-[320px] xl:h-[820px]"
                   data-url={booking.url}
                   title={`Calendly Buchung für ${booking.step}`}
                 />
@@ -176,19 +196,35 @@ function TrainingStep({
   index,
   title,
   body,
+  variant = "light",
 }: {
   index: string;
   title: string;
   body: string;
+  variant?: "light" | "dark";
 }) {
+  const dark = variant === "dark";
+
   return (
     <div className="grid grid-cols-[48px_1fr] items-start gap-4">
-      <span className="flex h-[42px] w-[42px] items-center justify-center rounded-[14px] bg-icon-container text-xs font-medium text-violet">
+      <span
+        className={[
+          "flex h-[42px] w-[42px] items-center justify-center rounded-[14px] text-xs font-medium",
+          dark ? "bg-white/15 text-white" : "bg-icon-container text-violet",
+        ].join(" ")}
+      >
         {index}
       </span>
       <div>
         <h2 className="mb-2 text-xl font-medium leading-[1.3]">{title}</h2>
-        <p className="mb-0 text-[15px] leading-[1.55] text-muted">{body}</p>
+        <p
+          className={[
+            "mb-0 text-[15px] leading-[1.55]",
+            dark ? "text-white/70" : "text-muted",
+          ].join(" ")}
+        >
+          {body}
+        </p>
       </div>
     </div>
   );
