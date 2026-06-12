@@ -92,6 +92,19 @@ div {
   outline-offset: 3px;
 }
 
+/* Verhindert das Aufblitzen der Inhalte zwischen erstem Paint und Hydration:
+   html.js-anim wird inline vor dem Paint gesetzt (layout.tsx), GSAP setzt die
+   Startzustände per Inline-Style und entfernt die Klasse (PageAnimations.tsx).
+   Ohne JS oder bei reduzierter Bewegung bleibt alles sichtbar. */
+@media (prefers-reduced-motion: no-preference) {
+  .js-anim [data-hero-item],
+  .js-anim [data-hero-panel],
+  .js-anim [data-hero-step],
+  .js-anim [data-reveal] {
+    visibility: hidden;
+  }
+}
+
 @media (max-width: 640px) {
   header {
     position: static;

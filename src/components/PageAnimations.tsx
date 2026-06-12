@@ -13,46 +13,58 @@ export default function PageAnimations() {
     const mm = gsap.matchMedia();
 
     mm.add("(prefers-reduced-motion: no-preference)", () => {
-      gsap.from("[data-hero-item]", {
-        y: 20,
-        autoAlpha: 0,
-        duration: 0.5,
-        ease: "power3.out",
-        stagger: 0.05,
-        clearProps: "all",
+      // Startzustände per Inline-Style setzen, BEVOR die CSS-Sperre
+      // (html.js-anim, siehe globals.css) fällt — sonst blitzen die Inhalte
+      // zwischen erstem Paint und Hydration kurz auf.
+      gsap.set(
+        "[data-hero-item], [data-hero-panel], [data-hero-step], [data-reveal]",
+        { autoAlpha: 0 }
+      );
+      document.documentElement.classList.remove("js-anim");
+
+      const tl = gsap.timeline({
+        defaults: { ease: "power2.out", duration: 0.55 },
       });
-      gsap.from("[data-hero-panel]", {
-        y: 24,
-        autoAlpha: 0,
-        duration: 0.6,
-        delay: 0.1,
-        ease: "power3.out",
-        clearProps: "all",
-      });
-      gsap.from("[data-hero-step]", {
-        y: 14,
-        autoAlpha: 0,
-        duration: 0.45,
-        delay: 0.25,
-        ease: "power3.out",
-        stagger: 0.08,
-        clearProps: "all",
-      });
+      tl.fromTo(
+        "[data-hero-item]",
+        { y: 14 },
+        { y: 0, autoAlpha: 1, stagger: 0.06, clearProps: "all" }
+      )
+        .fromTo(
+          "[data-hero-panel]",
+          { y: 18 },
+          { y: 0, autoAlpha: 1, clearProps: "all" },
+          "-=0.4"
+        )
+        .fromTo(
+          "[data-hero-step]",
+          { y: 10 },
+          { y: 0, autoAlpha: 1, stagger: 0.07, clearProps: "all" },
+          "-=0.35"
+        );
 
       gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
-        gsap.from(el, {
-          y: 28,
-          autoAlpha: 0,
-          duration: 0.7,
-          ease: "power3.out",
-          clearProps: "all",
-          scrollTrigger: {
-            trigger: el,
-            start: "top 88%",
-            once: true,
-          },
-        });
+        gsap.fromTo(
+          el,
+          { y: 16 },
+          {
+            y: 0,
+            autoAlpha: 1,
+            duration: 0.5,
+            ease: "power2.out",
+            clearProps: "all",
+            scrollTrigger: {
+              trigger: el,
+              start: "top 85%",
+              once: true,
+            },
+          }
+        );
       });
+    });
+
+    mm.add("(prefers-reduced-motion: reduce)", () => {
+      document.documentElement.classList.remove("js-anim");
     });
   });
 

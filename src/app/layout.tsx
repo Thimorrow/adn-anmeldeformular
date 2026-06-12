@@ -13,8 +13,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="de">
+    // suppressHydrationWarning: das Inline-Script unten setzt js-anim auf <html>,
+    // bevor React hydriert — der Klassen-Unterschied ist beabsichtigt.
+    <html lang="de" suppressHydrationWarning>
       <body>
+        <script
+          // Markiert vor dem ersten Paint, dass JS läuft: globals.css versteckt
+          // animierte Elemente nur unter html.js-anim, GSAP blendet sie wieder ein.
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.classList.add("js-anim");`,
+          }}
+        />
         {children}
         <Script
           src="https://assets.calendly.com/assets/external/widget.js"

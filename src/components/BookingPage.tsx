@@ -25,9 +25,9 @@ type Content = {
 
 const CONTENT: Record<Variant, Content> = {
   "vor-ort": {
-    heroTitle: "Los geht es vor Ort im ADN Gebäude",
+    heroTitle: "Buche deine zwei Trainingstage vor Ort",
     heroText:
-      "Dein Training startet mit zwei Tagen vor Ort. Wähle unten erst einen Termin für Tag 1, dann einen für Tag 2.",
+      "Dein KI-Training beginnt mit zwei Präsenztagen im ADN Gebäude. Wähle unten zuerst einen Termin für Tag 1 und danach einen für Tag 2.",
     bookingHeading: "Beide Termine vor Ort auswählen",
     infoHeading: "Was dich an den zwei Tagen vor Ort erwartet",
     notice: (
@@ -66,9 +66,9 @@ const CONTENT: Record<Variant, Content> = {
       "Beide Tage finden vor Ort im ADN Gebäude statt. Das Training ist Teil des KI Transformationsprogramms bei ADN und wird von yesterday durchgeführt.",
   },
   digital: {
-    heroTitle: "Danach geht es digital weiter",
+    heroTitle: "Buche deine zwei digitalen Trainingstage",
     heroText:
-      "Das digitale Training baut auf den Tagen vor Ort auf und läuft remote von deinem Platz aus. Wähle auch hier erst einen Termin für Tag 1, dann einen für Tag 2.",
+      "Das digitale Training baut auf den Tagen vor Ort auf und läuft remote von deinem Arbeitsplatz aus. Wähle auch hier zuerst einen Termin für Tag 1 und danach einen für Tag 2.",
     bookingHeading: "Beide digitalen Termine auswählen",
     infoHeading: "Was dich an den zwei digitalen Tagen erwartet",
     notice: (
@@ -180,13 +180,13 @@ export default function BookingPage({ variant }: { variant: Variant }) {
               {content.heroText}
             </p>
             <a
-              className="group inline-flex min-h-[48px] w-fit items-center justify-center gap-2 rounded-full bg-button-primary px-6 text-[13px] font-medium leading-none text-white no-underline shadow-button transition hover:-translate-y-px hover:bg-button-primary-hover"
+              className="group inline-flex min-h-[48px] w-fit items-center justify-center gap-2 rounded-full bg-button-primary px-6 text-[13px] font-medium leading-none text-white no-underline shadow-button transition-[background-color,transform] duration-200 ease-out hover:bg-button-primary-hover active:scale-[0.98] motion-reduce:transition-none"
               href="#buchung"
               data-hero-item
             >
               <span className="text-white">Jetzt Termine buchen</span>
               <span
-                className="flex h-6 w-6 items-center justify-center rounded-full bg-white/12 text-white transition group-hover:translate-y-0.5 group-hover:bg-white/18"
+                className="flex h-6 w-6 items-center justify-center rounded-full bg-white/12 text-white transition-[background-color,transform] duration-200 ease-out group-hover:translate-y-0.5 group-hover:bg-white/18 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0"
                 aria-hidden="true"
               >
                 ↓
@@ -204,7 +204,7 @@ export default function BookingPage({ variant }: { variant: Variant }) {
                 So funktioniert&rsquo;s
               </p>
               <h2 className="mb-0 text-[26px] font-normal leading-[1.12] tracking-[-0.4px] sm:text-[30px]">
-                Zwei Trainings, eine Reihenfolge.
+                Erst vor Ort, dann digital.
               </h2>
             </div>
             <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/15">
@@ -294,14 +294,14 @@ export default function BookingPage({ variant }: { variant: Variant }) {
           {isVorOrt && (
             <Link
               href="/digital"
-              className="group mt-6 flex min-h-[56px] flex-wrap items-center justify-between gap-3 rounded-2xl bg-button-primary px-6 py-4 text-[15px] font-medium text-white no-underline shadow-button transition hover:bg-button-primary-hover"
+              className="group mt-6 flex min-h-[56px] flex-wrap items-center justify-between gap-3 rounded-2xl bg-button-primary px-6 py-4 text-[15px] font-medium text-white no-underline shadow-button transition-colors duration-200 ease-out hover:bg-button-primary-hover"
             >
               <span className="text-white">
                 Beide Termine vor Ort gebucht? Weiter zum digitalen Training
               </span>
               <span
                 aria-hidden="true"
-                className="text-white transition group-hover:translate-x-0.5"
+                className="text-white transition-transform duration-200 ease-out group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
               >
                 →
               </span>
