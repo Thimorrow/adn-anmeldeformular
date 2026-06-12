@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import CalendlyWidget from "@/components/CalendlyWidget";
 import PageAnimations from "@/components/PageAnimations";
 
@@ -17,6 +16,8 @@ type Content = {
   heroText: string;
   bookingHeading: string;
   infoHeading: string;
+  panelTitle: string;
+  panelSteps: { index: string; title: string; body: string }[];
   notice: React.ReactNode;
   bookings: Booking[];
   cards: { label: string; title: string; body: string }[];
@@ -25,15 +26,29 @@ type Content = {
 
 const CONTENT: Record<Variant, Content> = {
   "vor-ort": {
-    heroTitle: "Buche deine zwei Trainingstage vor Ort",
+    heroTitle: "Buche deine zwei Trainingstage vor Ort in Bochum",
     heroText:
-      "Dein KI-Training beginnt mit zwei Präsenztagen im ADN Gebäude. Wähle unten zuerst einen Termin für Tag 1 und danach einen für Tag 2.",
-    bookingHeading: "Beide Termine vor Ort auswählen",
+      "Dieses KI-Training findet nicht remote statt. Wähle unten zuerst einen Termin für Tag 1 und danach einen für Tag 2 im ADN Gebäude in Bochum.",
+    bookingHeading: "Beide Termine vor Ort in Bochum auswählen",
     infoHeading: "Was dich an den zwei Tagen vor Ort erwartet",
+    panelTitle: "Zwei Tage. Ein fester Trainingsort.",
+    panelSteps: [
+      {
+        index: "01",
+        title: "Tag 1 vor Ort in Bochum",
+        body: "Grundlagen-Training im ADN Gebäude.",
+      },
+      {
+        index: "02",
+        title: "Tag 2 vor Ort in Bochum",
+        body: "Fortgeschrittenen-Training im ADN Gebäude.",
+      },
+    ],
     notice: (
       <>
-        <strong className="font-medium text-ink">Wichtig:</strong> Dein Termin
-        für Tag 2 muss nach deinem Termin für Tag 1 liegen.
+        <strong className="font-semibold text-ink">Vor Ort in Bochum:</strong>{" "}
+        Dieses Training findet nicht remote statt. Dein Termin für Tag 2 muss
+        nach deinem Termin für Tag 1 liegen.
       </>
     ),
     bookings: [
@@ -63,22 +78,32 @@ const CONTENT: Record<Variant, Content> = {
       },
     ],
     format:
-      "Beide Tage finden vor Ort im ADN Gebäude statt. Das Training ist Teil des KI Transformationsprogramms bei ADN und wird von yesterday durchgeführt.",
+      "Beide Tage finden vor Ort im ADN Gebäude in Bochum statt. Das Training ist Teil des KI Transformationsprogramms bei ADN und wird von yesterday durchgeführt.",
   },
   digital: {
-    heroTitle: "Buche deine zwei digitalen Trainingstage",
+    heroTitle: "Buche deine zwei Remote-Trainingstage",
     heroText:
-      "Das digitale Training baut auf den Tagen vor Ort auf und läuft remote von deinem Arbeitsplatz aus. Wähle auch hier zuerst einen Termin für Tag 1 und danach einen für Tag 2.",
-    bookingHeading: "Beide digitalen Termine auswählen",
-    infoHeading: "Was dich an den zwei digitalen Tagen erwartet",
+      "Dieses KI-Training findet remote von deinem Arbeitsplatz aus statt. Wähle unten zuerst einen Termin für Tag 1 und danach einen für Tag 2.",
+    bookingHeading: "Beide Remote-Termine auswählen",
+    infoHeading: "Was dich an den zwei Remote-Tagen erwartet",
+    panelTitle: "Zwei Tage. Komplett remote.",
+    panelSteps: [
+      {
+        index: "01",
+        title: "Tag 1 remote",
+        body: "Grundlagen-Training von deinem Arbeitsplatz aus.",
+      },
+      {
+        index: "02",
+        title: "Tag 2 remote",
+        body: "Fortgeschrittenen-Training von deinem Arbeitsplatz aus.",
+      },
+    ],
     notice: (
       <>
-        <strong className="font-medium text-ink">Wichtig:</strong> Buche zuerst
-        das{" "}
-        <Link href="/" className="font-medium text-ink underline">
-          Training vor Ort
-        </Link>
-        . Dein Termin für Tag 2 muss nach deinem Termin für Tag 1 liegen.
+        <strong className="font-medium text-ink">Wichtig:</strong> Dieses
+        Training findet remote statt. Dein Termin für Tag 2 muss nach deinem
+        Termin für Tag 1 liegen.
       </>
     ),
     bookings: [
@@ -99,7 +124,7 @@ const CONTENT: Record<Variant, Content> = {
       {
         label: "Tag 1",
         title: "Grundlagen-Training",
-        body: "Remote von deinem Arbeitsplatz aus: Vertiefung der Grundlagen aus dem Training vor Ort und sicheres Anwenden des Werkzeugs in deinen eigenen Aufgaben.",
+        body: "Remote von deinem Arbeitsplatz aus: verständliche Einführung in die Grundlagen der KI und sicheres Anwenden des Werkzeugs in deinen eigenen Aufgaben.",
       },
       {
         label: "Tag 2",
@@ -116,38 +141,25 @@ export default function BookingPage({ variant }: { variant: Variant }) {
   const content = CONTENT[variant];
   const isVorOrt = variant === "vor-ort";
   const accentBg = "bg-teal";
-  const chipLabel = isVorOrt ? "Training 1 · Vor Ort" : "Training 2 · Digital";
+  const chipLabel = isVorOrt ? "Training 1 · Vor Ort" : "Training 2 · Remote";
 
   return (
     <>
       <header className="sticky top-0 z-10 flex min-h-[68px] items-center justify-between gap-6 border-b border-line bg-white/80 px-5 py-3.5 backdrop-blur-xl max-sm:items-start max-sm:gap-2 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:px-10 lg:px-16">
-        <a
+        <div
           className="inline-flex items-center gap-3 text-[13px] font-medium text-ink no-underline sm:justify-self-start"
-          href="/"
-          aria-label="Yesterday Academy"
         >
           <Image src="/academy-mark.svg" alt="" width={30} height={30} priority />
           <span>yesterday academy</span>
-        </a>
-        <nav
-          aria-label="Training wählen"
-          className="relative grid grid-cols-2 items-center rounded-full border border-line bg-white p-1 shadow-card"
+        </div>
+        <span
+          className={[
+            "inline-flex min-h-9 w-fit items-center rounded-full px-4 text-[13px] font-medium text-white sm:justify-self-center",
+            accentBg,
+          ].join(" ")}
         >
-          <span
-            aria-hidden="true"
-            className={[
-              "absolute inset-y-1 left-1 w-[calc(50%-4px)] rounded-full transition duration-300 ease-out motion-reduce:transition-none",
-              accentBg,
-              isVorOrt ? "translate-x-0" : "translate-x-full",
-            ].join(" ")}
-          />
-          <ToggleLink href="/" step="1" active={isVorOrt}>
-            Vor Ort
-          </ToggleLink>
-          <ToggleLink href="/digital" step="2" active={!isVorOrt}>
-            Digital
-          </ToggleLink>
-        </nav>
+          {chipLabel}
+        </span>
       </header>
 
       <main className="px-3 pb-10 sm:px-6 lg:px-12">
@@ -204,35 +216,17 @@ export default function BookingPage({ variant }: { variant: Variant }) {
                 So funktioniert&rsquo;s
               </p>
               <h2 className="mb-0 text-[26px] font-normal leading-[1.12] tracking-[-0.4px] sm:text-[30px]">
-                Erst vor Ort, dann digital.
+                {content.panelTitle}
               </h2>
             </div>
             <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/15">
-              <TrainingStep
-                index="01"
-                title="Training vor Ort"
-                body={
-                  isVorOrt
-                    ? "Buchst du hier auf dieser Seite."
-                    : "Buchst du zuerst auf der ersten Seite."
-                }
-                variant="dark"
-              />
+              <TrainingStep {...content.panelSteps[0]} variant="dark" />
               <div
                 className="my-3 ml-5 h-12 w-0.5 rounded-full bg-white/20"
                 aria-hidden="true"
                 data-hero-step
               />
-              <TrainingStep
-                index="02"
-                title="Digitales Training"
-                body={
-                  isVorOrt
-                    ? "Buchst du danach im nächsten Schritt."
-                    : "Buchst du jetzt hier auf dieser Seite."
-                }
-                variant="dark"
-              />
+              <TrainingStep {...content.panelSteps[1]} variant="dark" />
             </div>
           </section>
         </section>
@@ -291,22 +285,6 @@ export default function BookingPage({ variant }: { variant: Variant }) {
             ))}
           </div>
 
-          {isVorOrt && (
-            <Link
-              href="/digital"
-              className="group mt-6 flex min-h-[56px] flex-wrap items-center justify-between gap-3 rounded-2xl bg-button-primary px-6 py-4 text-[15px] font-medium text-white no-underline shadow-button transition-colors duration-200 ease-out hover:bg-button-primary-hover"
-            >
-              <span className="text-white">
-                Beide Termine vor Ort gebucht? Weiter zum digitalen Training
-              </span>
-              <span
-                aria-hidden="true"
-                className="text-white transition-transform duration-200 ease-out group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
-              >
-                →
-              </span>
-            </Link>
-          )}
         </section>
 
         <section className="mx-auto mb-7 max-w-[1180px] rounded-[28px] border border-shell bg-panel p-6 sm:p-8">
@@ -350,49 +328,6 @@ export default function BookingPage({ variant }: { variant: Variant }) {
         </a>
       </footer>
     </>
-  );
-}
-
-function ToggleLink({
-  href,
-  step,
-  active,
-  children,
-}: {
-  href: string;
-  step: string;
-  active: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      aria-current={active ? "page" : undefined}
-      className={[
-        "relative inline-flex min-h-9 items-center justify-center gap-2 rounded-full px-4 text-[13px] font-medium no-underline transition-colors duration-300 motion-reduce:transition-none",
-        active ? "text-white" : "text-ink-soft",
-      ].join(" ")}
-    >
-      <span
-        className={[
-          "flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-semibold transition-colors duration-300 motion-reduce:transition-none",
-          active ? "bg-white/15 text-white" : "bg-icon-container text-violet",
-        ].join(" ")}
-        aria-hidden="true"
-      >
-        {step}
-      </span>
-      <span
-        className={[
-          "transition-colors duration-300 motion-reduce:transition-none",
-          active ? "text-white" : undefined,
-        ]
-          .filter(Boolean)
-          .join(" ")}
-      >
-        {children}
-      </span>
-    </Link>
   );
 }
 
