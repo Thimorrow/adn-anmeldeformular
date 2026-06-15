@@ -4,6 +4,8 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "ADN KI-Transformation | Trainingstermine buchen",
   description: "Termine buchen für die ADN KI-Trainings mit yesterday.",
+  // Interne Buchungsseite (nur per Link an ADN-Mitarbeiter) -> nicht indexieren.
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({

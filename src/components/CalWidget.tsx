@@ -72,11 +72,13 @@ export default function CalWidget({
   title,
   month,
   layout = "month_view",
+  onBooked,
 }: {
   calLink: string;
   title: string;
   month?: string; // Startmonat (JJJJ-MM); sonst öffnet cal.com den aktuellen Monat
   layout?: Layout;
+  onBooked?: () => void; // feuert, wenn in diesem Embed erfolgreich gebucht wurde
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<Status>("loading");
@@ -89,6 +91,9 @@ export default function CalWidget({
   // Welcher Namespace ist aktuell im Container gerendert? Verhindert das
   // doppelte Neuladen bei React StrictMode (Effekt feuert im Dev zweimal).
   const renderedRef = useRef<string | null>(null);
+  // Immer das aktuelle onBooked aufrufen, obwohl der Listener nur einmal hängt.
+  const onBookedRef = useRef(onBooked);
+  onBookedRef.current = onBooked;
 
   useEffect(() => {
     ensureCalBootstrap();
@@ -129,6 +134,11 @@ export default function CalWidget({
       ns("on", { action: "linkReady", callback: () => setStatus("ready") });
       // Lädt das gewählte Event-Iframe nicht, denselben Fallback zeigen.
       ns("on", { action: "linkFailed", callback: () => setStatus("error") });
+      // Erfolgreiche Buchung melden (für die Schritt-2-Freischaltung).
+      ns("on", {
+        action: "bookingSuccessful",
+        callback: () => onBookedRef.current?.(),
+      });
     }
 
     const timeout = window.setTimeout(() => {

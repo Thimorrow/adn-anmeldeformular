@@ -1,6 +1,6 @@
 import Image from "next/image";
 import CalendlyWidget from "@/components/CalendlyWidget";
-import CalBooking from "@/components/CalBooking";
+import CalBookingFlow from "@/components/CalBookingFlow";
 import PageAnimations from "@/components/PageAnimations";
 
 type Variant = "vor-ort" | "digital";
@@ -207,48 +207,48 @@ export default function BookingPage({
             <span>{content.notice}</span>
           </p>
 
-          <div className="grid gap-5">
-            {content.bookings.map((booking) => (
-              <article
-                key={booking.url}
-                className="overflow-hidden rounded-[10px] border border-line bg-white"
-                data-reveal
-              >
-                <div className="flex items-center gap-4 px-5 pb-3 pt-5 sm:px-6">
-                  <span
-                    className={[
-                      "flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-lg font-semibold text-white",
-                      accentBg,
-                    ].join(" ")}
-                    aria-hidden="true"
-                  >
-                    {booking.step}
-                  </span>
-                  <div>
-                    <span className="mb-1 block text-label uppercase text-muted">
-                      {booking.day}
+          {provider === "cal" ? (
+            <CalBookingFlow
+              bookings={content.bookings}
+              accentBg={accentBg}
+              variant={variant}
+            />
+          ) : (
+            <div className="grid gap-5">
+              {content.bookings.map((booking) => (
+                <article
+                  key={booking.url}
+                  className="overflow-hidden rounded-[10px] border border-line bg-white"
+                  data-reveal
+                >
+                  <div className="flex items-center gap-4 px-5 pb-3 pt-5 sm:px-6">
+                    <span
+                      className={[
+                        "flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-lg font-semibold text-white",
+                        accentBg,
+                      ].join(" ")}
+                      aria-hidden="true"
+                    >
+                      {booking.step}
                     </span>
-                    <h3 className="mb-0 text-[22px] font-medium leading-[1.25]">
-                      <span className="sr-only">Schritt {booking.step}: </span>
-                      {booking.title}
-                    </h3>
+                    <div>
+                      <span className="mb-1 block text-label uppercase text-muted">
+                        {booking.day}
+                      </span>
+                      <h3 className="mb-0 text-[22px] font-medium leading-[1.25]">
+                        <span className="sr-only">Schritt {booking.step}: </span>
+                        {booking.title}
+                      </h3>
+                    </div>
                   </div>
-                </div>
-                {provider === "cal" ? (
-                  <CalBooking
-                    calLink={booking.calLink}
-                    months={booking.months}
-                    title={`Buchung für ${booking.day}`}
-                  />
-                ) : (
                   <CalendlyWidget
                     url={booking.url}
                     title={`Calendly Buchung für ${booking.day}`}
                   />
-                )}
-              </article>
-            ))}
-          </div>
+                </article>
+              ))}
+            </div>
+          )}
 
         </section>
 

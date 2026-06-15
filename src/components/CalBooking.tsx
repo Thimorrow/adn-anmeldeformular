@@ -29,10 +29,12 @@ export default function CalBooking({
   calLink,
   months,
   title,
+  onBooked,
 }: {
   calLink: string;
   months: string[]; // Monate mit freien Terminen (JJJJ-MM), aufsteigend
   title: string;
+  onBooked?: () => void; // feuert bei erfolgreicher Buchung (Schritt-2-Freischaltung)
 }) {
   const [active, setActive] = useState(months[0]);
   const multiMonth = months.length > 1;
@@ -109,7 +111,12 @@ export default function CalBooking({
               m === active ? "" : "invisible pointer-events-none",
             ].join(" ")}
           >
-            <CalWidget calLink={calLink} month={m} title={title} />
+            <CalWidget
+              calLink={calLink}
+              month={m}
+              title={title}
+              onBooked={onBooked}
+            />
           </div>
         ))}
       </div>
