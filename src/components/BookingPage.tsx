@@ -1,14 +1,17 @@
 import Image from "next/image";
 import CalendlyWidget from "@/components/CalendlyWidget";
+import CalWidget from "@/components/CalWidget";
 import PageAnimations from "@/components/PageAnimations";
 
 type Variant = "vor-ort" | "digital";
+type Provider = "calendly" | "cal";
 
 type Booking = {
   step: string;
   day: string;
   title: string;
-  url: string;
+  url: string; // Calendly Inline-URL
+  calLink: string; // cal.com calLink (username/event-slug, ohne Domain)
 };
 
 type Content = {
@@ -42,12 +45,14 @@ const CONTENT: Record<Variant, Content> = {
         day: "Tag 1 · Grundlagen-Training",
         title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-vor-ort?hide_event_type_details=1&hide_gdpr_banner=1",
+        calLink: "yesterday-ai/adn-vor-ort-training-tag-1",
       },
       {
         step: "2",
         day: "Tag 2 · Fortgeschrittenen-Training",
         title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-vor-ort-clone-1?hide_event_type_details=1&hide_gdpr_banner=1",
+        calLink: "yesterday-ai/adn-vor-ort-training-tag-2",
       },
     ],
     cards: [
@@ -84,12 +89,16 @@ const CONTENT: Record<Variant, Content> = {
         day: "Tag 1 · Grundlagen-Training",
         title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-vor-ort-clone?hide_event_type_details=1&hide_gdpr_banner=1",
+        // TODO: echten cal.com Link für Remote Tag 1 eintragen
+        calLink: "yesterday-ai/adn-remote-training-tag-1",
       },
       {
         step: "2",
         day: "Tag 2 · Fortgeschrittenen-Training",
         title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-digital-clone?hide_event_type_details=1&hide_gdpr_banner=1",
+        // TODO: echten cal.com Link für Remote Tag 2 eintragen
+        calLink: "yesterday-ai/adn-remote-training-tag-2",
       },
     ],
     cards: [
@@ -109,7 +118,13 @@ const CONTENT: Record<Variant, Content> = {
   },
 };
 
-export default function BookingPage({ variant }: { variant: Variant }) {
+export default function BookingPage({
+  variant,
+  provider = "calendly",
+}: {
+  variant: Variant;
+  provider?: Provider;
+}) {
   const content = CONTENT[variant];
   const isVorOrt = variant === "vor-ort";
   const accentBg = "bg-violet";
@@ -189,7 +204,7 @@ export default function BookingPage({ variant }: { variant: Variant }) {
             <span>{content.notice}</span>
           </p>
 
-          <div className="grid gap-5 xl:grid-cols-2">
+          <div className="grid gap-5">
             {content.bookings.map((booking) => (
               <article
                 key={booking.url}
@@ -216,10 +231,17 @@ export default function BookingPage({ variant }: { variant: Variant }) {
                     </h3>
                   </div>
                 </div>
-                <CalendlyWidget
-                  url={booking.url}
-                  title={`Calendly Buchung für ${booking.day}`}
-                />
+                {provider === "cal" ? (
+                  <CalWidget
+                    calLink={booking.calLink}
+                    title={`Buchung für ${booking.day}`}
+                  />
+                ) : (
+                  <CalendlyWidget
+                    url={booking.url}
+                    title={`Calendly Buchung für ${booking.day}`}
+                  />
+                )}
               </article>
             ))}
           </div>
