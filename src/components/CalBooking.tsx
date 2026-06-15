@@ -41,50 +41,61 @@ export default function CalBooking({
 
   return (
     <>
-      {multiMonth && (
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-line bg-violet/[0.06] px-5 py-3.5">
-          <span className="flex items-center gap-2 text-[14px] text-ink">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-              className="text-violet"
-            >
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 11v5" />
-              <path d="M12 8h.01" />
-            </svg>
-            Freie Termine in mehreren Monaten — Monat wählen:
-          </span>
-          <span className="flex flex-wrap gap-2">
-            {months.map((m) => {
-              const isActive = m === active;
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-line bg-violet/[0.06] px-5 py-3.5">
+        <span className="flex items-center gap-2 text-[14px] text-ink">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+            className="text-violet"
+          >
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 11v5" />
+            <path d="M12 8h.01" />
+          </svg>
+          {multiMonth
+            ? "Freie Termine in mehreren Monaten — Monat wählen:"
+            : "Alle freien Termine im"}
+        </span>
+        <span className="flex flex-wrap gap-2">
+          {months.map((m) => {
+            // Nur ein Monat: statischer Info-Pill, kein Button (nichts zu wählen).
+            if (!multiMonth) {
               return (
-                <button
+                <span
                   key={m}
-                  type="button"
-                  onClick={() => setActive(m)}
-                  aria-pressed={isActive}
-                  className={[
-                    "inline-flex min-h-8 items-center rounded-full px-3.5 text-[13px] font-medium transition-colors duration-150 ease-out",
-                    isActive
-                      ? "bg-violet text-white"
-                      : "border border-violet/40 text-ink hover:bg-violet/10",
-                  ].join(" ")}
+                  className="inline-flex min-h-8 items-center rounded-full bg-violet px-3.5 text-[13px] font-medium text-white"
                 >
                   {formatMonth(m, withYear)}
-                </button>
+                </span>
               );
-            })}
-          </span>
-        </div>
-      )}
+            }
+            const isActive = m === active;
+            return (
+              <button
+                key={m}
+                type="button"
+                onClick={() => setActive(m)}
+                aria-pressed={isActive}
+                className={[
+                  "inline-flex min-h-8 items-center rounded-full px-3.5 text-[13px] font-medium transition-colors duration-150 ease-out",
+                  isActive
+                    ? "bg-violet text-white"
+                    : "border border-violet/40 text-ink hover:bg-violet/10",
+                ].join(" ")}
+              >
+                {formatMonth(m, withYear)}
+              </button>
+            );
+          })}
+        </span>
+      </div>
       {/* Alle Monate werden sofort vorgeladen und liegen im selben Grid-Feld
           übereinander; nur der aktive ist sichtbar. Inaktive behalten ihre
           Größe (visibility statt display), damit der Embed korrekt
