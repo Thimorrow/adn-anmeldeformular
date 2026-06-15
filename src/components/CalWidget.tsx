@@ -91,12 +91,6 @@ export default function CalWidget({
   const renderedRef = useRef<string | null>(null);
 
   useEffect(() => {
-    // TEMP/DEMO: ?calfail=1 in der URL erzwingt den Fehler-Screen. Wieder entfernen.
-    if (new URLSearchParams(window.location.search).has("calfail")) {
-      setStatus("error");
-      return;
-    }
-
     ensureCalBootstrap();
     const Cal = window.Cal;
     const container = containerRef.current;

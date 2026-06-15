@@ -24,17 +24,9 @@ const LOAD_TIMEOUT_MS = 10000;
 // Über diesen Store kippen bei einem Ausfall alle Widgets gemeinsam auf "error".
 type Status = "loading" | "ready" | "error";
 let scriptStatus: Status = "loading";
-let forced = false; // TEMP/DEMO: rastet einen erzwungenen Status ein (?calendlyfail=1)
 const listeners = new Set<() => void>();
 
-function setScriptStatus(next: Status, force = false) {
-  if (force) {
-    forced = true;
-    scriptStatus = next;
-    listeners.forEach((notify) => notify());
-    return;
-  }
-  if (forced) return; // erzwungener Status (Demo) gewinnt gegen onReady/Timeout
+function setScriptStatus(next: Status) {
   // "ready" gewinnt: ein geladenes Script bleibt geladen, auch wenn ein später
   // ablaufender Timeout noch "error" melden möchte.
   if (scriptStatus === next || scriptStatus === "ready") return;
@@ -83,13 +75,6 @@ export default function CalendlyWidget({
     const id = window.setTimeout(() => setScriptStatus("error"), LOAD_TIMEOUT_MS);
     return () => window.clearTimeout(id);
   }, [status]);
-
-  // TEMP/DEMO: ?calendlyfail=1 in der URL erzwingt den Fehler-Screen. Wieder entfernen.
-  useEffect(() => {
-    if (new URLSearchParams(window.location.search).has("calendlyfail")) {
-      setScriptStatus("error", true);
-    }
-  }, []);
 
   return (
     <div className="relative h-[700px] min-w-0 sm:h-[760px] sm:min-w-[320px] xl:h-[820px]">
