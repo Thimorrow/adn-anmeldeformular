@@ -52,7 +52,7 @@ const CONTENT: Record<Variant, Content> = {
         day: "Tag 2 · Fortgeschrittenen-Training",
         title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-vor-ort-clone-1?hide_event_type_details=1&hide_gdpr_banner=1",
-        calLink: "yesterday-ai/adn-vor-ort-training-tag-2",
+        calLink: "yesterday-ai/adn-training-vor-ort-tag-2",
       },
     ],
     cards: [
@@ -89,16 +89,14 @@ const CONTENT: Record<Variant, Content> = {
         day: "Tag 1 · Grundlagen-Training",
         title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-vor-ort-clone?hide_event_type_details=1&hide_gdpr_banner=1",
-        // TODO: echten cal.com Link für Remote Tag 1 eintragen
-        calLink: "yesterday-ai/adn-remote-training-tag-1",
+        calLink: "yesterday-ai/adn-digital-1",
       },
       {
         step: "2",
         day: "Tag 2 · Fortgeschrittenen-Training",
         title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-digital-clone?hide_event_type_details=1&hide_gdpr_banner=1",
-        // TODO: echten cal.com Link für Remote Tag 2 eintragen
-        calLink: "yesterday-ai/adn-remote-training-tag-2",
+        calLink: "yesterday-ai/adn-digital-2",
       },
     ],
     cards: [
