@@ -1,6 +1,6 @@
 import Image from "next/image";
 import CalendlyWidget from "@/components/CalendlyWidget";
-import CalWidget from "@/components/CalWidget";
+import CalBooking from "@/components/CalBooking";
 import PageAnimations from "@/components/PageAnimations";
 
 type Variant = "vor-ort" | "digital";
@@ -12,7 +12,7 @@ type Booking = {
   title: string;
   url: string; // Calendly Inline-URL
   calLink: string; // cal.com calLink (username/event-slug, ohne Domain)
-  month: string; // cal.com Startmonat (JJJJ-MM) = Monat des ersten freien Termins
+  months: string[]; // Monate mit freien Terminen (JJJJ-MM), aufsteigend; [0] ist Start
 };
 
 type Content = {
@@ -47,7 +47,7 @@ const CONTENT: Record<Variant, Content> = {
         title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-vor-ort?hide_event_type_details=1&hide_gdpr_banner=1",
         calLink: "yesterday-ai/adn-vor-ort-training-tag-1",
-        month: "2026-07", // erster Slot 01.07.2026
+        months: ["2026-07", "2026-08"], // Slots 01.07.–05.08.2026
       },
       {
         step: "2",
@@ -55,7 +55,7 @@ const CONTENT: Record<Variant, Content> = {
         title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-vor-ort-clone-1?hide_event_type_details=1&hide_gdpr_banner=1",
         calLink: "yesterday-ai/adn-training-vor-ort-tag-2",
-        month: "2026-08", // erster Slot 12.08.2026
+        months: ["2026-08", "2026-09"], // Slots 12.08.–09.09.2026
       },
     ],
     cards: [
@@ -93,7 +93,7 @@ const CONTENT: Record<Variant, Content> = {
         title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-vor-ort-clone?hide_event_type_details=1&hide_gdpr_banner=1",
         calLink: "yesterday-ai/adn-digital-1",
-        month: "2026-07", // erster Slot 08.07.2026
+        months: ["2026-07", "2026-08"], // Slots 08.07.–05.08.2026
       },
       {
         step: "2",
@@ -101,7 +101,7 @@ const CONTENT: Record<Variant, Content> = {
         title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-digital-clone?hide_event_type_details=1&hide_gdpr_banner=1",
         calLink: "yesterday-ai/adn-digital-2",
-        month: "2026-08", // erster Slot 19.08.2026
+        months: ["2026-08"], // Slots 19.08.–27.08.2026 (nur ein Monat -> keine Leiste)
       },
     ],
     cards: [
@@ -235,9 +235,9 @@ export default function BookingPage({
                   </div>
                 </div>
                 {provider === "cal" ? (
-                  <CalWidget
+                  <CalBooking
                     calLink={booking.calLink}
-                    month={booking.month}
+                    months={booking.months}
                     title={`Buchung für ${booking.day}`}
                   />
                 ) : (

@@ -65,23 +65,30 @@ function ensureCalBootstrap() {
 
 type Status = "loading" | "ready" | "error";
 
-// Verhindert doppelte Inline-Initialisierung pro Namespace (z. B. React
-// StrictMode im Dev ruft Effekte zweimal auf).
-const initialized = new Set<string>();
+type Layout = "month_view" | "week_view" | "column_view";
 
 export default function CalWidget({
   calLink,
   title,
   month,
+  layout = "month_view",
 }: {
   calLink: string;
   title: string;
   month?: string; // Startmonat (JJJJ-MM); sonst öffnet cal.com den aktuellen Monat
+  layout?: Layout;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<Status>("loading");
-  // Eigener Namespace pro Embed, sonst überschreibt das zweite Widget das erste.
-  const namespace = calLink.replace(/[^a-zA-Z0-9]/g, "-");
+  // Eigener Namespace pro Embed UND pro Monat: ändert sich der Monat (Nutzer
+  // klickt einen anderen), entsteht ein neuer Namespace -> frischer Embed.
+  const namespace = `${calLink}-${month ?? "default"}-${layout}`.replace(
+    /[^a-zA-Z0-9]/g,
+    "-"
+  );
+  // Welcher Namespace ist aktuell im Container gerendert? Verhindert das
+  // doppelte Neuladen bei React StrictMode (Effekt feuert im Dev zweimal).
+  const renderedRef = useRef<string | null>(null);
 
   useEffect(() => {
     // TEMP/DEMO: ?calfail=1 in der URL erzwingt den Fehler-Screen. Wieder entfernen.
@@ -98,24 +105,27 @@ export default function CalWidget({
       return;
     }
 
-    Cal("init", namespace, { origin: CAL_ORIGIN });
-    const ns = Cal.ns?.[namespace];
-    if (!ns) {
-      setStatus("error");
-      return;
-    }
+    // Nur (neu) initialisieren, wenn sich der gewünschte Embed geändert hat.
+    if (renderedRef.current !== namespace) {
+      renderedRef.current = namespace;
+      setStatus("loading");
+      container.innerHTML = ""; // alten Monat-Embed entfernen (Monatswechsel)
 
-    if (!initialized.has(namespace)) {
-      initialized.add(namespace);
+      Cal("init", namespace, { origin: CAL_ORIGIN });
+      const ns = Cal.ns?.[namespace];
+      if (!ns) {
+        setStatus("error");
+        return;
+      }
       ns("inline", {
         elementOrSelector: container,
         calLink,
-        // month öffnet den Kalender direkt im Monat des ersten freien Termins.
-        config: { layout: "month_view", theme: "light", ...(month ? { month } : {}) },
+        // month öffnet den Kalender direkt im gewählten Monat.
+        config: { layout, theme: "light", ...(month ? { month } : {}) },
       });
       ns("ui", {
         theme: "light", // Seite ist weiß; cal.com soll nicht dem System folgen
-        layout: "month_view",
+        layout,
         hideEventTypeDetails: false, // bei Vor-Ort zeigt das Adresse + Dauer
         cssVarsPerTheme: {
           light: { "cal-brand": BRAND_VIOLET },
@@ -125,16 +135,13 @@ export default function CalWidget({
       ns("on", { action: "linkReady", callback: () => setStatus("ready") });
       // Lädt das gewählte Event-Iframe nicht, denselben Fallback zeigen.
       ns("on", { action: "linkFailed", callback: () => setStatus("error") });
-    } else {
-      // Embed existiert bereits (Iframe ist schon initialisiert) -> nicht erneut laden.
-      setStatus("ready");
     }
 
     const timeout = window.setTimeout(() => {
       setStatus((s) => (s === "loading" ? "error" : s));
     }, LOAD_TIMEOUT_MS);
     return () => window.clearTimeout(timeout);
-  }, [calLink, namespace, month]);
+  }, [calLink, namespace, month, layout]);
 
   return (
     <div className="relative h-[700px] min-w-0 sm:h-[760px] sm:min-w-[320px] xl:h-[820px]">
