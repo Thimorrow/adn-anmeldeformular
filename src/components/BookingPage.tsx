@@ -12,6 +12,7 @@ type Booking = {
   title: string;
   url: string; // Calendly Inline-URL
   calLink: string; // cal.com calLink (username/event-slug, ohne Domain)
+  month: string; // cal.com Startmonat (JJJJ-MM) = Monat des ersten freien Termins
 };
 
 type Content = {
@@ -46,6 +47,7 @@ const CONTENT: Record<Variant, Content> = {
         title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-vor-ort?hide_event_type_details=1&hide_gdpr_banner=1",
         calLink: "yesterday-ai/adn-vor-ort-training-tag-1",
+        month: "2026-07", // erster Slot 01.07.2026
       },
       {
         step: "2",
@@ -53,6 +55,7 @@ const CONTENT: Record<Variant, Content> = {
         title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-vor-ort-clone-1?hide_event_type_details=1&hide_gdpr_banner=1",
         calLink: "yesterday-ai/adn-training-vor-ort-tag-2",
+        month: "2026-08", // erster Slot 12.08.2026
       },
     ],
     cards: [
@@ -90,6 +93,7 @@ const CONTENT: Record<Variant, Content> = {
         title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-vor-ort-clone?hide_event_type_details=1&hide_gdpr_banner=1",
         calLink: "yesterday-ai/adn-digital-1",
+        month: "2026-07", // erster Slot 08.07.2026
       },
       {
         step: "2",
@@ -97,6 +101,7 @@ const CONTENT: Record<Variant, Content> = {
         title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-digital-clone?hide_event_type_details=1&hide_gdpr_banner=1",
         calLink: "yesterday-ai/adn-digital-2",
+        month: "2026-08", // erster Slot 19.08.2026
       },
     ],
     cards: [
@@ -232,6 +237,7 @@ export default function BookingPage({
                 {provider === "cal" ? (
                   <CalWidget
                     calLink={booking.calLink}
+                    month={booking.month}
                     title={`Buchung für ${booking.day}`}
                   />
                 ) : (

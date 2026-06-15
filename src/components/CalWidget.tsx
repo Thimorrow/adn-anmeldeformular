@@ -72,9 +72,11 @@ const initialized = new Set<string>();
 export default function CalWidget({
   calLink,
   title,
+  month,
 }: {
   calLink: string;
   title: string;
+  month?: string; // Startmonat (JJJJ-MM); sonst öffnet cal.com den aktuellen Monat
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<Status>("loading");
@@ -108,7 +110,8 @@ export default function CalWidget({
       ns("inline", {
         elementOrSelector: container,
         calLink,
-        config: { layout: "month_view", theme: "light" },
+        // month öffnet den Kalender direkt im Monat des ersten freien Termins.
+        config: { layout: "month_view", theme: "light", ...(month ? { month } : {}) },
       });
       ns("ui", {
         theme: "light", // Seite ist weiß; cal.com soll nicht dem System folgen
@@ -131,7 +134,7 @@ export default function CalWidget({
       setStatus((s) => (s === "loading" ? "error" : s));
     }, LOAD_TIMEOUT_MS);
     return () => window.clearTimeout(timeout);
-  }, [calLink, namespace]);
+  }, [calLink, namespace, month]);
 
   return (
     <div className="relative h-[700px] min-w-0 sm:h-[760px] sm:min-w-[320px] xl:h-[820px]">
