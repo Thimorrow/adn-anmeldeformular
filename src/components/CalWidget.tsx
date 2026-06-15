@@ -1,7 +1,6 @@
 "use client";
 
-import Script from "next/script";
-import { useCallback, useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type CalApi = ((...args: unknown[]) => void) & {
   ns?: Record<string, (...args: unknown[]) => void>;
@@ -23,39 +22,52 @@ const BRAND_VIOLET = "#6652ff";
 // und den Fallback zeigen, statt den Nutzer auf eine leere Box starren zu lassen.
 const LOAD_TIMEOUT_MS = 10000;
 
-// Geteilter Lade-Status: Beide Widgets teilen sich dasselbe cal.com-Script
-// (Next dedupliziert die src), daher feuert onError nur für eine Instanz.
-// Über diesen Store kippen bei einem Ausfall alle Widgets gemeinsam auf "error".
+/* eslint-disable */
+// Offizieller cal.com Embed-Bootstrap (verbatim aus dem Inline-Snippet).
+// Legt window.Cal als Queue an UND lädt embed.js beim ersten Aufruf nach.
+// Ohne diesen Stub wirft embed.js intern "Cal is not defined".
+function ensureCalBootstrap() {
+  if ((window as any).Cal) return;
+  (function (C: any, A: string, L: string) {
+    const p = function (a: any, ar: any) {
+      a.q.push(ar);
+    };
+    const d = C.document;
+    C.Cal =
+      C.Cal ||
+      function () {
+        const cal = C.Cal;
+        const ar = arguments;
+        if (!cal.loaded) {
+          cal.ns = {};
+          cal.q = cal.q || [];
+          d.head.appendChild(d.createElement("script")).src = A;
+          cal.loaded = true;
+        }
+        if (ar[0] === L) {
+          const api: any = function () {
+            p(api, arguments);
+          };
+          const namespace = ar[1];
+          api.q = api.q || [];
+          if (typeof namespace === "string") {
+            cal.ns[namespace] = cal.ns[namespace] || api;
+            p(cal.ns[namespace], ar);
+            p(cal, ["initNamespace", namespace]);
+          } else p(cal, ar);
+          return;
+        }
+        p(cal, ar);
+      };
+  })(window, CAL_SRC, "init");
+}
+/* eslint-enable */
+
 type Status = "loading" | "ready" | "error";
-let scriptStatus: Status = "loading";
-let forced = false; // TEMP/DEMO: rastet einen erzwungenen Status ein (?calfail=1)
-const listeners = new Set<() => void>();
 
-function setScriptStatus(next: Status, force = false) {
-  if (force) {
-    forced = true;
-    scriptStatus = next;
-    listeners.forEach((notify) => notify());
-    return;
-  }
-  if (forced) return; // erzwungener Status (Demo) gewinnt gegen onReady/Timeout
-  // "ready" gewinnt: ein geladenes Script bleibt geladen, auch wenn ein später
-  // ablaufender Timeout noch "error" melden möchte.
-  if (scriptStatus === next || scriptStatus === "ready") return;
-  scriptStatus = next;
-  listeners.forEach((notify) => notify());
-}
-
-function useScriptStatus() {
-  return useSyncExternalStore(
-    (notify) => {
-      listeners.add(notify);
-      return () => listeners.delete(notify);
-    },
-    () => scriptStatus,
-    () => "loading" as Status
-  );
-}
+// Verhindert doppelte Inline-Initialisierung pro Namespace (z. B. React
+// StrictMode im Dev ruft Effekte zweimal auf).
+const initialized = new Set<string>();
 
 export default function CalWidget({
   calLink,
@@ -65,54 +77,61 @@ export default function CalWidget({
   title: string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const status = useScriptStatus();
+  const [status, setStatus] = useState<Status>("loading");
   // Eigener Namespace pro Embed, sonst überschreibt das zweite Widget das erste.
   const namespace = calLink.replace(/[^a-zA-Z0-9]/g, "-");
 
-  const init = useCallback(() => {
+  useEffect(() => {
+    // TEMP/DEMO: ?calfail=1 in der URL erzwingt den Fehler-Screen. Wieder entfernen.
+    if (new URLSearchParams(window.location.search).has("calfail")) {
+      setStatus("error");
+      return;
+    }
+
+    ensureCalBootstrap();
     const Cal = window.Cal;
     const container = containerRef.current;
-    if (!Cal || !container || container.querySelector("iframe")) return;
+    if (!Cal || !container) {
+      setStatus("error");
+      return;
+    }
+
     Cal("init", namespace, { origin: CAL_ORIGIN });
     const ns = Cal.ns?.[namespace];
-    if (!ns) return;
-    ns("inline", {
-      elementOrSelector: container,
-      calLink,
-      config: { layout: "month_view" },
-    });
-    ns("ui", {
-      theme: "light", // Seite ist weiß; cal.com soll nicht dem System folgen
-      layout: "month_view",
-      hideEventTypeDetails: false, // bei Vor-Ort zeigt das Adresse + Dauer
-      cssVarsPerTheme: {
-        light: { "cal-brand": BRAND_VIOLET },
-        dark: { "cal-brand": BRAND_VIOLET },
-      },
-    });
-    // Lädt das gewählte Event-Iframe nicht, denselben Fallback zeigen.
-    ns("on", { action: "linkFailed", callback: () => setScriptStatus("error") });
-  }, [calLink, namespace]);
-
-  // Script geladen -> jedes Widget initialisiert sein EIGENES Embed.
-  // Nicht an onReady hängen: next/script feuert onReady nur für eine Instanz der
-  // deduplizierten src, sonst bliebe das zweite Widget leer.
-  useEffect(() => {
-    if (status === "ready") init();
-  }, [status, init]);
-
-  useEffect(() => {
-    if (status !== "loading") return;
-    const id = window.setTimeout(() => setScriptStatus("error"), LOAD_TIMEOUT_MS);
-    return () => window.clearTimeout(id);
-  }, [status]);
-
-  // TEMP/DEMO: ?calfail=1 in der URL erzwingt den Fehler-Screen. Wieder entfernen.
-  useEffect(() => {
-    if (new URLSearchParams(window.location.search).has("calfail")) {
-      setScriptStatus("error", true);
+    if (!ns) {
+      setStatus("error");
+      return;
     }
-  }, []);
+
+    if (!initialized.has(namespace)) {
+      initialized.add(namespace);
+      ns("inline", {
+        elementOrSelector: container,
+        calLink,
+        config: { layout: "month_view" },
+      });
+      ns("ui", {
+        theme: "light", // Seite ist weiß; cal.com soll nicht dem System folgen
+        layout: "month_view",
+        hideEventTypeDetails: false, // bei Vor-Ort zeigt das Adresse + Dauer
+        cssVarsPerTheme: {
+          light: { "cal-brand": BRAND_VIOLET },
+          dark: { "cal-brand": BRAND_VIOLET },
+        },
+      });
+      ns("on", { action: "linkReady", callback: () => setStatus("ready") });
+      // Lädt das gewählte Event-Iframe nicht, denselben Fallback zeigen.
+      ns("on", { action: "linkFailed", callback: () => setStatus("error") });
+    } else {
+      // Embed existiert bereits (Iframe ist schon initialisiert) -> nicht erneut laden.
+      setStatus("ready");
+    }
+
+    const timeout = window.setTimeout(() => {
+      setStatus((s) => (s === "loading" ? "error" : s));
+    }, LOAD_TIMEOUT_MS);
+    return () => window.clearTimeout(timeout);
+  }, [calLink, namespace]);
 
   return (
     <div className="relative h-[700px] min-w-0 sm:h-[760px] sm:min-w-[320px] xl:h-[820px]">
@@ -165,12 +184,6 @@ export default function CalWidget({
           </p>
         </div>
       )}
-      <Script
-        src={CAL_SRC}
-        strategy="afterInteractive"
-        onReady={() => setScriptStatus("ready")}
-        onError={() => setScriptStatus("error")}
-      />
     </div>
   );
 }
