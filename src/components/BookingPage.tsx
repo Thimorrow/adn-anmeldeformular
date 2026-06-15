@@ -16,8 +16,6 @@ type Content = {
   heroText: string;
   bookingHeading: string;
   infoHeading: string;
-  panelTitle: string;
-  panelSteps: { index: string; title: string; body: string }[];
   notice: React.ReactNode;
   bookings: Booking[];
   cards: { label: string; title: string; body: string }[];
@@ -28,22 +26,9 @@ const CONTENT: Record<Variant, Content> = {
   "vor-ort": {
     heroTitle: "Buche deine zwei Trainingstage vor Ort in Bochum",
     heroText:
-      "Dieses KI-Training findet nicht remote statt. Wähle unten zuerst einen Termin für Tag 1 und danach einen für Tag 2 im ADN Gebäude in Bochum.",
-    bookingHeading: "Beide Termine vor Ort in Bochum auswählen",
-    infoHeading: "Was dich an den zwei Tagen vor Ort erwartet",
-    panelTitle: "Zwei Tage. Ein fester Trainingsort.",
-    panelSteps: [
-      {
-        index: "01",
-        title: "Tag 1 vor Ort in Bochum",
-        body: "Grundlagen-Training im ADN Gebäude.",
-      },
-      {
-        index: "02",
-        title: "Tag 2 vor Ort in Bochum",
-        body: "Fortgeschrittenen-Training im ADN Gebäude.",
-      },
-    ],
+      "Zwei aufeinander aufbauende Tage. Wähle unten deine beiden Termine.",
+    bookingHeading: "Beide Termine auswählen",
+    infoHeading: "Was dich an den zwei Tagen erwartet",
     notice: (
       <>
         <strong className="font-semibold text-ink">Vor Ort in Bochum:</strong>{" "}
@@ -55,13 +40,13 @@ const CONTENT: Record<Variant, Content> = {
       {
         step: "1",
         day: "Tag 1 · Grundlagen-Training",
-        title: "Termin für Tag 1 wählen",
+        title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-vor-ort?hide_event_type_details=1&hide_gdpr_banner=1",
       },
       {
         step: "2",
         day: "Tag 2 · Fortgeschrittenen-Training",
-        title: "Termin für Tag 2 wählen",
+        title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-vor-ort-clone-1?hide_event_type_details=1&hide_gdpr_banner=1",
       },
     ],
@@ -74,7 +59,7 @@ const CONTENT: Record<Variant, Content> = {
       {
         label: "Tag 2",
         title: "Fortgeschrittenen-Training",
-        body: "Weiter vor Ort: vom einfachen Fragen stellen zum Einrichten eigener KI Helfer für wiederkehrende Aufgaben, inklusive Grenzen der KI und einem persönlichen Plan für die Umsetzung im Team.",
+        body: "Vom einfachen Fragen stellen zum Einrichten eigener KI Helfer für wiederkehrende Aufgaben, inklusive Grenzen der KI und einem persönlichen Plan für die Umsetzung im Team.",
       },
     ],
     format:
@@ -83,25 +68,12 @@ const CONTENT: Record<Variant, Content> = {
   digital: {
     heroTitle: "Buche deine zwei Remote-Trainingstage",
     heroText:
-      "Dieses KI-Training findet remote von deinem Arbeitsplatz aus statt. Wähle unten zuerst einen Termin für Tag 1 und danach einen für Tag 2.",
-    bookingHeading: "Beide Remote-Termine auswählen",
-    infoHeading: "Was dich an den zwei Remote-Tagen erwartet",
-    panelTitle: "Zwei Tage. Komplett remote.",
-    panelSteps: [
-      {
-        index: "01",
-        title: "Tag 1 remote",
-        body: "Grundlagen-Training von deinem Arbeitsplatz aus.",
-      },
-      {
-        index: "02",
-        title: "Tag 2 remote",
-        body: "Fortgeschrittenen-Training von deinem Arbeitsplatz aus.",
-      },
-    ],
+      "Zwei aufeinander aufbauende Tage. Wähle unten deine beiden Termine.",
+    bookingHeading: "Beide Termine auswählen",
+    infoHeading: "Was dich an den zwei Tagen erwartet",
     notice: (
       <>
-        <strong className="font-medium text-ink">Wichtig:</strong> Dieses
+        <strong className="font-semibold text-ink">Remote:</strong> Dieses
         Training findet remote statt. Dein Termin für Tag 2 muss nach deinem
         Termin für Tag 1 liegen.
       </>
@@ -110,13 +82,13 @@ const CONTENT: Record<Variant, Content> = {
       {
         step: "1",
         day: "Tag 1 · Grundlagen-Training",
-        title: "Termin für Tag 1 wählen",
+        title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-vor-ort-clone?hide_event_type_details=1&hide_gdpr_banner=1",
       },
       {
         step: "2",
         day: "Tag 2 · Fortgeschrittenen-Training",
-        title: "Termin für Tag 2 wählen",
+        title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-digital-clone?hide_event_type_details=1&hide_gdpr_banner=1",
       },
     ],
@@ -124,12 +96,12 @@ const CONTENT: Record<Variant, Content> = {
       {
         label: "Tag 1",
         title: "Grundlagen-Training",
-        body: "Remote von deinem Arbeitsplatz aus: verständliche Einführung in die Grundlagen der KI und sicheres Anwenden des Werkzeugs in deinen eigenen Aufgaben.",
+        body: "Verständliche Einführung in die Grundlagen der KI und sicheres Anwenden des Werkzeugs in deinen eigenen Aufgaben.",
       },
       {
         label: "Tag 2",
         title: "Fortgeschrittenen-Training",
-        body: "Ebenfalls remote: eigene KI Helfer für wiederkehrende Aufgaben einrichten, Grenzen der KI kennenlernen und ein persönlicher Plan für die Umsetzung im Team.",
+        body: "Eigene KI Helfer für wiederkehrende Aufgaben einrichten, Grenzen der KI kennenlernen und ein persönlicher Plan für die Umsetzung im Team.",
       },
     ],
     format:
@@ -140,8 +112,8 @@ const CONTENT: Record<Variant, Content> = {
 export default function BookingPage({ variant }: { variant: Variant }) {
   const content = CONTENT[variant];
   const isVorOrt = variant === "vor-ort";
-  const accentBg = "bg-teal";
-  const chipLabel = isVorOrt ? "Training 1 · Vor Ort" : "Training 2 · Remote";
+  const accentBg = "bg-violet";
+  const chipLabel = isVorOrt ? "Training · Vor Ort" : "Training · Remote";
 
   return (
     <>
@@ -165,28 +137,19 @@ export default function BookingPage({ variant }: { variant: Variant }) {
       <main className="px-3 pb-10 sm:px-6 lg:px-12">
         <PageAnimations key={variant} />
 
-        <section className="mx-auto grid max-w-[1180px] items-stretch gap-5 py-4 sm:py-6 lg:grid-cols-[1.08fr_0.92fr] lg:py-8">
+        <section className="mx-auto max-w-[1180px] py-4 sm:py-6 lg:py-8">
           <div className="flex min-w-0 flex-col justify-center rounded-[28px] border border-shell bg-panel px-8 py-9 shadow-card sm:px-12 lg:px-14">
             <p className="mb-3 text-label uppercase text-muted" data-hero-item>
               ADN KI-Transformation
             </p>
-            <span
-              className={[
-                "mb-4 inline-flex w-fit items-center rounded-full px-4 py-2 text-[13px] font-medium text-white",
-                accentBg,
-              ].join(" ")}
-              data-hero-item
-            >
-              {chipLabel}
-            </span>
             <h1
-              className="mb-5 max-w-[760px] text-[36px] font-normal leading-[1.05] tracking-[-0.8px] text-ink sm:text-[46px] lg:text-[52px] lg:tracking-[-1.2px]"
+              className="mb-5 text-[36px] font-normal leading-[1.05] tracking-[-0.8px] text-ink sm:text-[46px] lg:text-[52px] lg:tracking-[-1.2px]"
               data-hero-item
             >
               {content.heroTitle}
             </h1>
             <p
-              className="mb-7 max-w-[700px] text-[15px] leading-[1.62] text-muted sm:text-[17px]"
+              className="mb-7 max-w-[760px] text-[15px] leading-[1.62] text-muted sm:text-[17px]"
               data-hero-item
             >
               {content.heroText}
@@ -205,30 +168,6 @@ export default function BookingPage({ variant }: { variant: Variant }) {
               </span>
             </a>
           </div>
-
-          <section
-            className="flex min-w-0 flex-col justify-center gap-5 rounded-[28px] bg-hero-gradient p-6 text-white shadow-hero sm:p-8 lg:p-9"
-            aria-label="So funktioniert die Buchung"
-            data-hero-panel
-          >
-            <div>
-              <p className="mb-3 text-label uppercase text-white/65">
-                So funktioniert&rsquo;s
-              </p>
-              <h2 className="mb-0 text-[26px] font-normal leading-[1.12] tracking-[-0.4px] sm:text-[30px]">
-                {content.panelTitle}
-              </h2>
-            </div>
-            <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/15">
-              <TrainingStep {...content.panelSteps[0]} variant="dark" />
-              <div
-                className="my-3 ml-5 h-12 w-0.5 rounded-full bg-white/20"
-                aria-hidden="true"
-                data-hero-step
-              />
-              <TrainingStep {...content.panelSteps[1]} variant="dark" />
-            </div>
-          </section>
         </section>
 
         <section
@@ -328,44 +267,6 @@ export default function BookingPage({ variant }: { variant: Variant }) {
         </a>
       </footer>
     </>
-  );
-}
-
-function TrainingStep({
-  index,
-  title,
-  body,
-  variant = "light",
-}: {
-  index: string;
-  title: string;
-  body: string;
-  variant?: "light" | "dark";
-}) {
-  const dark = variant === "dark";
-
-  return (
-    <div className="grid grid-cols-[48px_1fr] items-start gap-4" data-hero-step>
-      <span
-        className={[
-          "flex h-[42px] w-[42px] items-center justify-center rounded-[14px] text-xs font-medium",
-          dark ? "bg-white/15 text-white" : "bg-icon-container text-violet",
-        ].join(" ")}
-      >
-        {index}
-      </span>
-      <div>
-        <h3 className="mb-2 text-xl font-medium leading-[1.3]">{title}</h3>
-        <p
-          className={[
-            "mb-0 text-[15px] leading-[1.55]",
-            dark ? "text-white/70" : "text-muted",
-          ].join(" ")}
-        >
-          {body}
-        </p>
-      </div>
-    </div>
   );
 }
 

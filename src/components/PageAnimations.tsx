@@ -16,10 +16,7 @@ export default function PageAnimations() {
       // Startzustände per Inline-Style setzen, BEVOR die CSS-Sperre
       // (html.js-anim, siehe globals.css) fällt — sonst blitzen die Inhalte
       // zwischen erstem Paint und Hydration kurz auf.
-      gsap.set(
-        "[data-hero-item], [data-hero-panel], [data-hero-step], [data-reveal]",
-        { autoAlpha: 0 }
-      );
+      gsap.set("[data-hero-item], [data-reveal]", { autoAlpha: 0 });
       document.documentElement.classList.remove("js-anim");
 
       const tl = gsap.timeline({
@@ -29,19 +26,7 @@ export default function PageAnimations() {
         "[data-hero-item]",
         { y: 14 },
         { y: 0, autoAlpha: 1, stagger: 0.06, clearProps: "all" }
-      )
-        .fromTo(
-          "[data-hero-panel]",
-          { y: 18 },
-          { y: 0, autoAlpha: 1, clearProps: "all" },
-          "-=0.4"
-        )
-        .fromTo(
-          "[data-hero-step]",
-          { y: 10 },
-          { y: 0, autoAlpha: 1, stagger: 0.07, clearProps: "all" },
-          "-=0.35"
-        );
+      );
 
       gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
         gsap.fromTo(

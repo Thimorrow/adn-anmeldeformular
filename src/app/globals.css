@@ -98,8 +98,6 @@ div {
    Ohne JS oder bei reduzierter Bewegung bleibt alles sichtbar. */
 @media (prefers-reduced-motion: no-preference) {
   .js-anim [data-hero-item],
-  .js-anim [data-hero-panel],
-  .js-anim [data-hero-step],
   .js-anim [data-reveal] {
     visibility: hidden;
   }
