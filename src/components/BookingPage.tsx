@@ -188,10 +188,7 @@ export default function BookingPage({
           </div>
         </section>
 
-        <section
-          id="buchung"
-          className="mx-auto mb-7 max-w-[1180px] rounded-[28px] border border-shell bg-panel p-6 sm:p-8"
-        >
+        <section className="mx-auto mb-7 max-w-[1180px] rounded-[28px] border border-shell bg-panel p-6 sm:p-8">
           <SectionHeading label="Buchung">{content.bookingHeading}</SectionHeading>
 
           <p
@@ -207,6 +204,9 @@ export default function BookingPage({
             <span>{content.notice}</span>
           </p>
 
+          {/* Scroll-Ziel des Hero-Buttons: landet direkt auf der Tag-1-Karte.
+              scroll-mt schafft Abstand zum Sticky-Header. */}
+          <div id="buchung" className="scroll-mt-24">
           {provider === "cal" ? (
             <CalBookingFlow
               bookings={content.bookings}
@@ -249,6 +249,7 @@ export default function BookingPage({
               ))}
             </div>
           )}
+          </div>
 
         </section>
 

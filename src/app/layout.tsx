@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     // suppressHydrationWarning: das Inline-Script unten setzt js-anim auf <html>,
     // bevor React hydriert — der Klassen-Unterschied ist beabsichtigt.
-    <html lang="de" suppressHydrationWarning>
+    <html lang="de" className="scroll-smooth" suppressHydrationWarning>
       <body>
         <script
           // Markiert vor dem ersten Paint, dass JS läuft: globals.css versteckt
