@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function DigitalPage() {
-  return <BookingPage variant="digital" />;
+  return <BookingPage variant="digital" provider="cal" />;
 }

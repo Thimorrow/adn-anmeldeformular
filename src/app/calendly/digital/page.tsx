@@ -7,6 +7,6 @@ export const metadata: Metadata = {
     "Termine buchen für das Remote-KI-Training bei ADN mit yesterday.",
 };
 
-export default function CalDigitalPage() {
-  return <BookingPage variant="digital" provider="cal" />;
+export default function CalendlyDigitalPage() {
+  return <BookingPage variant="digital" provider="calendly" />;
 }

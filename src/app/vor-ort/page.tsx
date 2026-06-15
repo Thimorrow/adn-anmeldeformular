@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function VorOrtPage() {
-  return <BookingPage variant="vor-ort" />;
+  return <BookingPage variant="vor-ort" provider="cal" />;
 }

@@ -7,6 +7,6 @@ export const metadata: Metadata = {
     "Termine buchen für das ADN KI-Training vor Ort in Bochum mit yesterday.",
 };
 
-export default function CalVorOrtPage() {
-  return <BookingPage variant="vor-ort" provider="cal" />;
+export default function CalendlyVorOrtPage() {
+  return <BookingPage variant="vor-ort" provider="calendly" />;
 }
