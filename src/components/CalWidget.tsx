@@ -108,11 +108,13 @@ export default function CalWidget({
       ns("inline", {
         elementOrSelector: container,
         calLink,
-        config: { layout: "month_view", theme: "light" },
+        // column_view: Tage als Spalten mit freien Slots direkt sichtbar,
+        // statt Monatsraster mit Tag-für-Tag-Klick.
+        config: { layout: "column_view", theme: "light" },
       });
       ns("ui", {
         theme: "light", // Seite ist weiß; cal.com soll nicht dem System folgen
-        layout: "month_view",
+        layout: "column_view",
         hideEventTypeDetails: false, // bei Vor-Ort zeigt das Adresse + Dauer
         cssVarsPerTheme: {
           light: { "cal-brand": BRAND_VIOLET },
