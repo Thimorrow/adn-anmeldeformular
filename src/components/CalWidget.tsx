@@ -108,7 +108,7 @@ export default function CalWidget({
       ns("inline", {
         elementOrSelector: container,
         calLink,
-        config: { layout: "month_view" },
+        config: { layout: "month_view", theme: "light" },
       });
       ns("ui", {
         theme: "light", // Seite ist weiß; cal.com soll nicht dem System folgen
