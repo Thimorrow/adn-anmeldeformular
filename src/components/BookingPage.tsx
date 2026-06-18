@@ -101,7 +101,7 @@ const CONTENT: Record<Variant, Content> = {
         title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-digital-clone?hide_event_type_details=1&hide_gdpr_banner=1",
         calLink: "yesterday-ai/adn-digital-2",
-        months: ["2026-08"], // Slots 19.08.–27.08.2026 (nur ein Monat -> keine Leiste)
+        months: ["2026-08", "2026-09"], // Slots 19./20.08. + 08.09.2026
       },
     ],
     cards: [
