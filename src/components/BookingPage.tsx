@@ -92,7 +92,7 @@ const CONTENT: Record<Variant, Content> = {
         day: "Tag 1 · Grundlagen-Training",
         title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-vor-ort-clone?hide_event_type_details=1&hide_gdpr_banner=1",
-        calLink: "yesterday-ai/adn-digital-1",
+        calLink: "yesterdayacademy/adn-digital-1",
         months: ["2026-07", "2026-08"], // Slots 08.07.–05.08.2026
       },
       {
@@ -100,7 +100,7 @@ const CONTENT: Record<Variant, Content> = {
         day: "Tag 2 · Fortgeschrittenen-Training",
         title: "Termin wählen",
         url: "https://calendly.com/adn-yesterday/grundlagen-training-digital-clone?hide_event_type_details=1&hide_gdpr_banner=1",
-        calLink: "yesterday-ai/adn-digital-2",
+        calLink: "yesterdayacademy/adn-digital-2",
         months: ["2026-08", "2026-09"], // Slots 19./20.08. + 08.09.2026
       },
     ],
